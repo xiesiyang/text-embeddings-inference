@@ -405,6 +405,20 @@ pub struct Info {
     pub docker_label: Option<&'static str>,
 }
 
+#[derive(Clone, Debug, Serialize)]
+#[cfg_attr(feature = "http", derive(utoipa::ToSchema))]
+pub struct ModelsInfo {
+    pub object: String,
+    pub data: Vec<ModelInfo>,
+}
+#[derive(Clone, Debug, Serialize)]
+pub struct ModelInfo {
+    pub id: String,
+    pub object: String,
+    pub owned_by: String,
+    pub created: usize,
+}
+
 #[derive(Serialize)]
 #[cfg_attr(feature = "http", derive(utoipa::ToSchema))]
 pub enum ErrorType {

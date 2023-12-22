@@ -7,6 +7,7 @@ use crate::http::types::{
 use crate::{
     shutdown, ClassifierModel, EmbeddingModel, ErrorResponse, ErrorType, Info, ModelType,
     ResponseMetadata,
+    ModelInfo, ModelsInfo,
 };
 use anyhow::Context;
 use axum::extract::Extension;
@@ -40,6 +41,30 @@ responses((status = 200, description = "Served model info", body = Info))
 async fn get_model_info(info: Extension<Info>) -> Json<Info> {
     Json(info.0)
 }
+
+#[utoipa::path(
+get,
+tag = "Text Embeddings Inference",
+path = "/v1/models",
+responses((status = 200, description = "Served model info", body = ModelsInfo))
+)]
+#[instrument]
+async fn get_models(info: Extension<Info>) -> Json<ModelsInfo> {
+    let model_id = info.0.model_id;
+    let mut model_info = Vec::new();
+    model_info.push(ModelInfo {
+        id: model_id,
+        object: "model".to_string(),
+        created: 0,
+        owned_by: "".to_string(),
+    });
+    let models = ModelsInfo {
+        object: "list".to_string(),
+        data: model_info,
+    };
+    Json(models)
+}
+
 
 #[utoipa::path(
 get,
@@ -807,6 +832,8 @@ pub async fn run(
         .route("/rerank", post(rerank))
         // OpenAI compat route
         .route("/embeddings", post(openai_embed))
+        .route("/v1/embeddings", post(openai_embed))
+        .route("/v1/models", get(get_models))
         // Base Health route
         .route("/health", get(health))
         // Inference API health route
