@@ -105,5 +105,7 @@ FROM base
 
 COPY --from=http-builder /usr/src/target/release/text-embeddings-router /usr/local/bin/text-embeddings-router
 
-ENTRYPOINT ["text-embeddings-router"]
-CMD ["--json-output"]
+RUN mkdir /workspace
+WORKDIR /workspace
+COPY ./run.sh /workspace/run.sh
+ENTRYPOINT ["/workspace/run.sh"]
