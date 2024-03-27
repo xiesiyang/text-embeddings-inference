@@ -122,8 +122,8 @@ COPY --from=builder-75 /usr/src/target/release/text-embeddings-router /usr/local
 COPY --from=builder-80 /usr/src/target/release/text-embeddings-router /usr/local/bin/text-embeddings-router-80
 COPY --from=builder-90 /usr/src/target/release/text-embeddings-router /usr/local/bin/text-embeddings-router-90
 
-COPY cuda-all-entrypoint.sh entrypoint.sh
-RUN chmod +x entrypoint.sh
+COPY run.sh run.sh
+RUN chmod +x run.sh
 
-ENTRYPOINT ["./entrypoint.sh"]
-CMD ["--json-output"]
+ENTRYPOINT ["./run.sh"]
+
