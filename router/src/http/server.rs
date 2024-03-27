@@ -35,6 +35,8 @@ use tower_http::cors::{AllowOrigin, CorsLayer};
 use tracing::instrument;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
+use crate::http::openai::get_models;
+
 
 ///Text Embeddings Inference endpoint info
 #[utoipa::path(
@@ -1462,7 +1464,9 @@ pub async fn run(
         // AWS Sagemaker health route
         .route("/ping", get(health))
         // Prometheus metrics route
-        .route("/metrics", get(metrics));
+        .route("/metrics", get(metrics))
+        .route("/v1/models",get(get_models));
+
 
     #[cfg(feature = "google")]
     {
